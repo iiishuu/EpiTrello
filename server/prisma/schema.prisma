@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  boards          Board[]
+  cardMembers     CardMember[]
+  sentInvitations Invitation[] @relation("InvitationSender")
+}
+
+model Invitation {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  boardId   String
+  senderId  String
+  status    String   @default("pending")
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  board  Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  sender User  @relation("InvitationSender", fields: [senderId], references: [id])
+}
+
+model Board {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lists       List[]
+  labels      Label[]
+  invitations Invitation[]
+}
+
+model List {
+  id        String   @id @default(uuid())
+  title     String
+  position  Int
+  boardId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards Card[]
+}
+
+model Card {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  position    Int
+  listId      String
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  list    List         @relation(fields: [listId], references: [id], onDelete: Cascade)
+  labels  CardLabel[]
+  members CardMember[]
+}
+
+model Label {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  boardId   String
+  createdAt DateTime @default(now())
+
+  board Board       @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards CardLabel[]
+}
+
+model CardLabel {
+  cardId  String
+  labelId String
+  card    Card  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  label   Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+  @@id([cardId, labelId])
+}
+
+model CardMember {
+  cardId String
+  userId String
+  card   Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([cardId, userId])
+}
