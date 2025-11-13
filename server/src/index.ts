@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
+import invitationRoutes from './routes/invitations';
 
 // Load environment variables
 dotenv.config();
@@ -20,6 +21,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api', invitationRoutes);
 
 // Start server
 app.listen(PORT, () => {
