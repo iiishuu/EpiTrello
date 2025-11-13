@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
+import Breadcrumbs from '../components/common/Breadcrumbs';
+import PageTransition from '../components/common/PageTransition';
 
 export default function BoardView() {
   const { id } = useParams<{ id: string }>();
@@ -43,40 +45,52 @@ export default function BoardView() {
     },
   ];
 
+  const breadcrumbItems = [
+    { label: 'Home', path: '/' },
+    { label: board.name, path: `/board/${board.id}` },
+  ];
+
   return (
     <Layout showSidebar={false}>
-      {/* Board Header */}
-      <div
-        className="px-6 py-4 border-b border-gray-200"
-        style={{ backgroundColor: board.color }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/')}
-              className="p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <h1 className="text-2xl font-bold text-white">{board.name}</h1>
+      <PageTransition>
+        {/* Board Header */}
+        <div
+          className="px-6 py-4 border-b border-gray-200"
+          style={{ backgroundColor: board.color }}
+        >
+          <div className="mb-3">
+            <Breadcrumbs items={breadcrumbItems.map(item => ({
+              ...item,
+              label: item.label === board.name ? item.label : item.label,
+            }))} />
           </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate('/')}
+                className="p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <h1 className="text-2xl font-bold text-white">{board.name}</h1>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => setShowInviteModal(true)}
-              className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white border-none"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Invite
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => setShowInviteModal(true)}
+                className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white border-none"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Invite
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Board Content - Lists */}
       <div className="p-6 overflow-x-auto">
@@ -136,6 +150,7 @@ export default function BoardView() {
           </div>
         </div>
       </div>
+      </PageTransition>
     </Layout>
   );
 }

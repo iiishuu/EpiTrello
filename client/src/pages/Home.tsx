@@ -4,6 +4,7 @@ import { useAppSelector } from '../store/hooks';
 import Layout from '../components/layout/Layout';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
+import PageTransition from '../components/common/PageTransition';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function Home() {
 
   return (
     <Layout>
+      <PageTransition>
       <div className="p-6 md:p-8">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -99,6 +101,7 @@ export default function Home() {
           </div>
         )}
       </div>
+      </PageTransition>
     </Layout>
   );
 }

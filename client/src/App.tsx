@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import BoardView from './pages/BoardView';
 import AcceptInvitation from './pages/AcceptInvitation';
+import NotFound from './pages/NotFound';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -32,7 +33,8 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/404" element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </Provider>
