@@ -1,6 +1,33 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services/authService';
-import { AuthState, RegisterData, LoginData, User } from '../types';
+
+// Define types locally
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string | null;
+  createdAt: string;
+}
+
+interface RegisterData {
+  email: string;
+  password: string;
+  name: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+}
 
 const initialState: AuthState = {
   user: authService.getStoredUser(),

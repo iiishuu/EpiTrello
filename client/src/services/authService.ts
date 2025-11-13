@@ -1,5 +1,30 @@
 import axios from 'axios';
-import { AuthResponse, RegisterData, LoginData, User } from '../types';
+
+// Import types locally to avoid module resolution issues
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string | null;
+  createdAt: string;
+}
+
+interface AuthResponse {
+  message: string;
+  token: string;
+  user: User;
+}
+
+interface RegisterData {
+  email: string;
+  password: string;
+  name: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
