@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services/authService';
 
 // Define types locally
@@ -43,12 +44,8 @@ export const register = createAsyncThunk(
     try {
       const response = await authService.register(data);
       return response;
-    } catch (error: unknown) {
-      if (error instanceof Error && 'response' in error) {
-        const axiosError = error as { response: { data: { error: string } } };
-        return rejectWithValue(axiosError.response.data.error);
-      }
-      return rejectWithValue('Registration failed');
+    } catch (error: any) {
+      return rejectWithValue(error?.response?.data?.error || 'Registration failed');
     }
   }
 );
@@ -59,12 +56,8 @@ export const login = createAsyncThunk(
     try {
       const response = await authService.login(data);
       return response;
-    } catch (error: unknown) {
-      if (error instanceof Error && 'response' in error) {
-        const axiosError = error as { response: { data: { error: string } } };
-        return rejectWithValue(axiosError.response.data.error);
-      }
-      return rejectWithValue('Login failed');
+    } catch (error: any) {
+      return rejectWithValue(error?.response?.data?.error || 'Login failed');
     }
   }
 );
@@ -75,12 +68,8 @@ export const getCurrentUser = createAsyncThunk(
     try {
       const user = await authService.getCurrentUser();
       return user;
-    } catch (error: unknown) {
-      if (error instanceof Error && 'response' in error) {
-        const axiosError = error as { response: { data: { error: string } } };
-        return rejectWithValue(axiosError.response.data.error);
-      }
-      return rejectWithValue('Failed to fetch user');
+    } catch (error: any) {
+      return rejectWithValue(error?.response?.data?.error || 'Failed to fetch user');
     }
   }
 );
