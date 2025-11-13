@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import invitationRoutes from './routes/invitations';
+import boardRoutes from './routes/boards';
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/boards', boardRoutes);
 app.use('/api', invitationRoutes);
 
 // Start server
