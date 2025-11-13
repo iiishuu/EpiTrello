@@ -4,6 +4,7 @@ import { store } from './store';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import AcceptInvitation from './pages/AcceptInvitation';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/invite/:token" element={<AcceptInvitation />} />
           <Route
             path="/"
             element={
