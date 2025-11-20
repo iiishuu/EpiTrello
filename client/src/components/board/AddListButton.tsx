@@ -43,25 +43,30 @@ const AddListButton: React.FC<AddListButtonProps> = ({ boardId }) => {
 
   if (!isAdding) {
     return (
-      <button
-        onClick={() => setIsAdding(true)}
-        className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg p-3 w-72 flex-shrink-0 flex items-center gap-2 transition-colors"
-      >
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      <div className="w-72 flex-shrink-0">
+        <button
+          onClick={() => {
+            console.log('Add list button clicked');
+            setIsAdding(true);
+          }}
+          className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg p-3 flex items-center gap-2 transition-all hover:shadow-md font-medium"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-        Add a list
-      </button>
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Add a list
+        </button>
+      </div>
     );
   }
 
