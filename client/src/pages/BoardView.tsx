@@ -92,64 +92,64 @@ export default function BoardView() {
           </div>
         </div>
 
-      {/* Board Content - Lists */}
-      <div className="p-6 overflow-x-auto">
-        <div className="flex gap-4 min-h-[calc(100vh-180px)]">
-          {lists.map((list) => (
-            <div
-              key={list.id}
-              className="flex-shrink-0 w-72"
-            >
-              <Card padding="sm" className="bg-gray-100 border-none">
-                {/* List Header */}
-                <div className="flex items-center justify-between mb-3 px-2">
-                  <h3 className="font-bold text-gray-900">{list.name}</h3>
-                  <button className="p-1 text-gray-600 hover:bg-gray-200 rounded">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-                  </button>
-                </div>
+        {/* Board Content - Lists */}
+        <div className="p-6 overflow-x-auto">
+          <div className="flex gap-4 min-h-[calc(100vh-180px)]">
+            {lists.map((list) => (
+              <div
+                key={list.id}
+                className="flex-shrink-0 w-72"
+              >
+                <Card padding="sm" className="bg-gray-100 border-none">
+                  {/* List Header */}
+                  <div className="flex items-center justify-between mb-3 px-2">
+                    <h3 className="font-bold text-gray-900">{list.name}</h3>
+                    <button className="p-1 text-gray-600 hover:bg-gray-200 rounded">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                      </svg>
+                    </button>
+                  </div>
 
-                {/* Cards */}
-                <div className="space-y-2">
-                  {list.cards.map((card) => (
-                    <Card
-                      key={card.id}
-                      hover
-                      padding="sm"
-                      className="cursor-pointer"
-                    >
-                      <h4 className="font-medium text-gray-900 mb-1">{card.title}</h4>
-                      {card.description && (
-                        <p className="text-sm text-gray-600">{card.description}</p>
-                      )}
-                    </Card>
-                  ))}
+                  {/* Cards */}
+                  <div className="space-y-2">
+                    {list.cards.map((card) => (
+                      <Card
+                        key={card.id}
+                        hover
+                        padding="sm"
+                        className="cursor-pointer"
+                      >
+                        <h4 className="font-medium text-gray-900 mb-1">{card.title}</h4>
+                        {card.description && (
+                          <p className="text-sm text-gray-600">{card.description}</p>
+                        )}
+                      </Card>
+                    ))}
 
-                  {/* Add Card Button */}
-                  <button className="w-full px-3 py-2 text-left text-gray-600 hover:bg-gray-200 rounded-lg transition flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Add a card
-                  </button>
-                </div>
-              </Card>
+                    {/* Add Card Button */}
+                    <button className="w-full px-3 py-2 text-left text-gray-600 hover:bg-gray-200 rounded-lg transition flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Add a card
+                    </button>
+                  </div>
+                </Card>
+              </div>
+            ))}
+
+            {/* Add List Button */}
+            <div className="flex-shrink-0 w-72">
+              <button className="w-full px-4 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 text-gray-700 rounded-lg transition flex items-center gap-2 border-2 border-dashed border-gray-300">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Add another list
+              </button>
             </div>
-          ))}
-
-          {/* Add List Button */}
-          <div className="flex-shrink-0 w-72">
-            <button className="w-full px-4 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 text-gray-700 rounded-lg transition flex items-center gap-2 border-2 border-dashed border-gray-300">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Add another list
-            </button>
           </div>
         </div>
-      </div>
       </PageTransition>
     </Layout>
   );

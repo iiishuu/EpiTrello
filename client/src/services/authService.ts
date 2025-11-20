@@ -44,6 +44,24 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle authentication errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // If we get a 401 Unauthorized error, clear the stored auth data
+    if (error.response?.status === 401) {
+      const errorMessage = error.response?.data?.error?.toLowerCase() || '';
+      if (errorMessage.includes('invalid token') || errorMessage.includes('token expired') || errorMessage.includes('no token')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Redirect to login page
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const authService = {
   register: async (data: RegisterData): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>('/auth/register', data);

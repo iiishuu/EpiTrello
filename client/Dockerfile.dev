@@ -1,0 +1,22 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Copy the entire project including node_modules
+COPY . .
+
+# Install dependencies if node_modules is missing or incomplete
+RUN if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then \
+      npm config set registry https://registry.npmjs.org/ && \
+      npm config set fetch-retries 3 && \
+      npm config set fetch-retry-mintimeout 10000 && \
+      npm config set fetch-retry-maxtimeout 60000 && \
+      npm install --legacy-peer-deps --no-audit --no-fund; \
+    fi
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
