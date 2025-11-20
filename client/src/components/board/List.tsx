@@ -52,7 +52,7 @@ const List: React.FC<ListProps> = ({ list }) => {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-gray-100 rounded-lg p-3 w-72 flex-shrink-0"
+      className="bg-gray-100 rounded-lg p-3 w-72 flex-shrink-0 h-fit max-h-full flex flex-col"
     >
       {/* List header */}
       <div className="flex items-center justify-between mb-3">
