@@ -33,7 +33,7 @@ api.interceptors.response.use(
 
 export interface List {
   id: string;
-  name: string;
+  title: string;
   position: number;
   boardId: string;
   cards: any[];

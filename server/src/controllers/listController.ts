@@ -47,7 +47,7 @@ export const createList = async (req: AuthRequest, res: Response): Promise<void>
     // Create the list
     const list = await prisma.list.create({
       data: {
-        name: name.trim(),
+        title: name.trim(),
         position,
         boardId,
       },
@@ -103,7 +103,7 @@ export const updateList = async (req: AuthRequest, res: Response): Promise<void>
     const updatedList = await prisma.list.update({
       where: { id },
       data: {
-        name: name.trim(),
+        title: name.trim(),
       },
       include: {
         cards: true,

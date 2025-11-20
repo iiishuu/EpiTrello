@@ -71,7 +71,7 @@ const List: React.FC<ListProps> = ({ list }) => {
             onClick={() => setIsEditing(true)}
             className="flex-1 px-2 py-1 text-sm font-semibold cursor-pointer hover:bg-gray-200 rounded"
           >
-            {list.name}
+            {list.title}
           </h3>
         )}
         <div className="relative">
