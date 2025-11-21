@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../store';
 import { updateList, deleteList } from '../../store/listsSlice';
 import type { List as ListType } from '../../services/listService';
 import { motion } from 'framer-motion';
+import Card from './Card';
+import CardDetailModal from './CardDetailModal';
+import AddCardButton from './AddCardButton';
+import type { Card as CardType } from '../../services/cardService';
 
 interface ListProps {
   list: ListType;
@@ -12,23 +16,30 @@ interface ListProps {
 const List: React.FC<ListProps> = ({ list }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isEditing, setIsEditing] = useState(false);
-  const [listName, setListName] = useState(list.name);
+  const [listName, setListName] = useState(list.title);
   const [showMenu, setShowMenu] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+
+  // Get cards for this list from Redux store
+  const cardIds = useSelector((state: RootState) => state.cards.cardsByList[list.id] || []);
+  const cards = useSelector((state: RootState) =>
+    cardIds.map((id) => state.cards.cards[id]).filter(Boolean)
+  ).sort((a, b) => a.position - b.position);
 
   const handleUpdateName = async () => {
-    if (listName.trim() && listName !== list.name) {
+    if (listName.trim() && listName !== list.title) {
       try {
         await dispatch(updateList({ listId: list.id, data: { name: listName.trim() } })).unwrap();
       } catch (error) {
         console.error('Failed to update list:', error);
-        setListName(list.name);
+        setListName(list.title);
       }
     }
     setIsEditing(false);
   };
 
   const handleDelete = async () => {
-    if (window.confirm(`Delete list "${list.name}"? This will also delete all cards in this list.`)) {
+    if (window.confirm(`Delete list "${list.title}"? This will also delete all cards in this list.`)) {
       try {
         await dispatch(deleteList(list.id)).unwrap();
       } catch (error) {
@@ -42,7 +53,7 @@ const List: React.FC<ListProps> = ({ list }) => {
     if (e.key === 'Enter') {
       handleUpdateName();
     } else if (e.key === 'Escape') {
-      setListName(list.name);
+      setListName(list.title);
       setIsEditing(false);
     }
   };
@@ -112,30 +123,27 @@ const List: React.FC<ListProps> = ({ list }) => {
         </div>
       </div>
 
-      {/* Cards will go here */}
-      <div className="space-y-2 mb-2 min-h-[20px]">
-        {list.cards.length === 0 && (
+      {/* Cards */}
+      <div className="space-y-2 mb-2 min-h-[20px] overflow-y-auto flex-1">
+        {cards.length === 0 && (
           <p className="text-xs text-gray-400 text-center py-4">No cards yet</p>
         )}
+        {cards.map((card) => (
+          <Card key={card.id} card={card} onClick={() => setSelectedCard(card)} />
+        ))}
       </div>
 
-      {/* Add card button placeholder */}
-      <button className="w-full text-left px-2 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded flex items-center gap-2">
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-        Add a card
-      </button>
+      {/* Add card button */}
+      <AddCardButton listId={list.id} />
+
+      {/* Card detail modal */}
+      {selectedCard && (
+        <CardDetailModal
+          card={selectedCard}
+          isOpen={!!selectedCard}
+          onClose={() => setSelectedCard(null)}
+        />
+      )}
     </motion.div>
   );
 };

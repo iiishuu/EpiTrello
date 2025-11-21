@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../store';
 import { setLists, clearLists } from '../store/listsSlice';
+import { setCardsFromBoard, clearCards } from '../store/cardsSlice';
 import { boardService } from '../services/boardService';
 import Layout from '../components/layout/Layout';
 import Button from '../components/common/Button';
@@ -30,6 +31,13 @@ export default function BoardView() {
         const boardData = await boardService.getBoard(id);
         setBoard(boardData);
         dispatch(setLists(boardData.lists || []));
+
+        // Populate cards in Redux store
+        const cardsData = (boardData.lists || []).map((list: any) => ({
+          listId: list.id,
+          cards: list.cards || [],
+        }));
+        dispatch(setCardsFromBoard(cardsData));
       } catch (err: any) {
         console.error('Failed to fetch board:', err);
         setError(err.response?.data?.error || 'Failed to load board');
@@ -42,6 +50,7 @@ export default function BoardView() {
 
     return () => {
       dispatch(clearLists());
+      dispatch(clearCards());
     };
   }, [id, dispatch]);
 
