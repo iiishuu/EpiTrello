@@ -173,7 +173,9 @@ export default function BoardView() {
         });
       }
 
+      console.log('Updating cards:', cardsToUpdate);
       await cardService.reorderCards({ cards: cardsToUpdate });
+      console.log('Cards updated successfully');
     } catch (error) {
       console.error('Failed to reorder/move cards:', error);
       // Revert on error
