@@ -1,5 +1,4 @@
 import { Middleware } from '@reduxjs/toolkit';
-import { RootState } from '../index';
 
 // Debounce helper
 function debounce<T extends (...args: any[]) => void>(
@@ -29,7 +28,7 @@ const SAVE_ERROR_ACTIONS = [
 ];
 
 // Create debounced save function
-const debouncedSave = debounce((state: RootState, boardId: string) => {
+const debouncedSave = debounce((state: any, boardId: string) => {
   try {
     const persistData = {
       lists: state.lists.lists,
@@ -49,7 +48,7 @@ const debouncedSave = debounce((state: RootState, boardId: string) => {
   }
 }, 500); // 500ms debounce
 
-export const persistenceMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
+export const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
   const result = next(action);
 
   // Extract boardId from current route

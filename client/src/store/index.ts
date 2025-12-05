@@ -15,7 +15,7 @@ export const store = configureStore({
     labels: labelsReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(persistenceMiddleware),
+    getDefaultMiddleware().concat(persistenceMiddleware as any),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
