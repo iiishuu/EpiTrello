@@ -112,7 +112,7 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className={`bg-gray-100 dark:bg-gray-800 rounded-xl p-4 w-80 flex-shrink-0 h-fit max-h-full flex flex-col transition-all shadow-sm ${
+          className={`bg-gray-100 rounded-xl p-4 w-80 flex-shrink-0 h-fit max-h-full flex flex-col transition-all shadow-sm ${
             snapshot.isDragging ? 'opacity-80 rotate-2 shadow-2xl scale-105' : 'shadow-md'
           }`}
         >
@@ -125,14 +125,14 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
                 onChange={(e) => setListName(e.target.value)}
                 onBlur={handleUpdateName}
                 onKeyDown={handleKeyDown}
-                className="flex-1 px-3 py-2 text-base font-semibold bg-white dark:bg-gray-700 dark:text-gray-100 border-2 border-blue-500 dark:border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 text-base font-semibold bg-white border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 autoFocus
               />
             ) : (
               <h3
                 {...provided.dragHandleProps}
                 onClick={() => setIsEditing(true)}
-                className="flex-1 px-3 py-2 text-base font-bold text-gray-900 dark:text-gray-100 cursor-grab active:cursor-grabbing hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="flex-1 px-3 py-2 text-base font-bold text-gray-900 cursor-grab active:cursor-grabbing hover:bg-gray-200 rounded-lg transition-colors"
               >
                 {list.title}
               </h3>
@@ -140,7 +140,7 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                className="p-1 hover:bg-gray-200 rounded"
               >
                 <svg
                   className="w-4 h-4 text-gray-600"
@@ -162,10 +162,10 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
                     className="fixed inset-0 z-10"
                     onClick={() => setShowMenu(false)}
                   />
-                  <div className="absolute right-0 top-8 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg z-20 py-1">
+                  <div className="absolute right-0 top-8 w-48 bg-white rounded-lg shadow-lg z-20 py-1">
                     <button
                       onClick={handleDelete}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                     >
                       Delete list
                     </button>

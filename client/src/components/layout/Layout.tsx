@@ -11,7 +11,7 @@ export default function Layout({ children, showSidebar = true }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-gray-50 transition-colors">
       <Header />
 
       <div className="flex">

@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { logout } from '../../store/authSlice';
-import ThemeToggle from '../common/ThemeToggle';
 
 export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -26,7 +25,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 transition-colors">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-40 transition-colors">
       <div className="px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary hover:opacity-80 transition-opacity">
@@ -39,7 +38,7 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-4">
             <Link
               to="/"
-              className="px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium"
+              className="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition font-medium"
             >
               Boards
             </Link>
@@ -47,21 +46,20 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <ThemeToggle />
           {user && (
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition transform hover:scale-105 active:scale-95"
+                className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition transform hover:scale-105 active:scale-95"
               >
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-semibold shadow-md">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
-                <span className="hidden md:inline font-medium text-gray-700 dark:text-gray-200">
+                <span className="hidden md:inline font-medium text-gray-700">
                   {user.name}
                 </span>
                 <svg
-                  className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -71,16 +69,16 @@ export default function Header() {
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-2 animate-fade-in-down">
-                  <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 animate-fade-in-down">
+                  <div className="px-4 py-3 border-b border-gray-200">
+                    <p className="font-semibold text-gray-900">{user.name}</p>
+                    <p className="text-sm text-gray-600">{user.email}</p>
                   </div>
 
                   <div className="py-2">
                     <button
                       onClick={handleLogout}
-                      className="w-full px-4 py-2 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition flex items-center gap-2"
+                      className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50/20 transition flex items-center gap-2"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

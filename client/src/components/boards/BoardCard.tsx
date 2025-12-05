@@ -24,14 +24,14 @@ export default function BoardCard({ board, onClick }: BoardCardProps) {
 
       {/* Board Info */}
       <div className="p-4">
-        <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1 truncate">{board.name}</h3>
+        <h3 className="font-bold text-gray-900 mb-1 truncate">{board.name}</h3>
         {board.description && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{board.description}</p>
+          <p className="text-sm text-gray-600 line-clamp-2">{board.description}</p>
         )}
 
         {/* Board Stats */}
         {board._count && (
-          <div className="mt-3 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
