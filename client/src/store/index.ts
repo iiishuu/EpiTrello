@@ -3,6 +3,7 @@ import authReducer from './authSlice';
 import boardsReducer from './boardsSlice';
 import listsReducer from './listsSlice';
 import cardsReducer from './cardsSlice';
+import labelsReducer from './labelsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     boards: boardsReducer,
     lists: listsReducer,
     cards: cardsReducer,
+    labels: labelsReducer,
   },
 });
 

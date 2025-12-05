@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import { updateCard, deleteCard } from '../../store/cardsSlice';
-import type { Card, UpdateCardData } from '../../services/cardService';
+import { updateCard as updateCardInStore, deleteCard } from '../../store/cardsSlice';
+import type { Card } from '../../services/cardService';
 import { motion, AnimatePresence } from 'framer-motion';
+import LabelPicker from './LabelPicker';
+import MemberPicker from './MemberPicker';
 
 interface CardDetailModalProps {
   card: Card;
@@ -13,6 +15,7 @@ interface CardDetailModalProps {
 
 const CardDetailModal: React.FC<CardDetailModalProps> = ({ card, isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [currentCard, setCurrentCard] = useState<Card>(card);
   const [title, setTitle] = useState(card.title);
   const [description, setDescription] = useState(card.description || '');
   const [dueDate, setDueDate] = useState(
@@ -21,18 +24,26 @@ const CardDetailModal: React.FC<CardDetailModalProps> = ({ card, isOpen, onClose
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showLabelPicker, setShowLabelPicker] = useState(false);
+  const [showMemberPicker, setShowMemberPicker] = useState(false);
 
   useEffect(() => {
+    setCurrentCard(card);
     setTitle(card.title);
     setDescription(card.description || '');
     setDueDate(card.dueDate ? new Date(card.dueDate).toISOString().split('T')[0] : '');
   }, [card]);
 
+  const handleCardUpdate = (updatedCard: Card) => {
+    setCurrentCard(updatedCard);
+    dispatch(updateCardInStore({ cardId: updatedCard.id, data: {} }));
+  };
+
   const handleUpdateTitle = async () => {
     if (title.trim() && title !== card.title) {
       setIsSaving(true);
       try {
-        await dispatch(updateCard({ cardId: card.id, data: { title: title.trim() } })).unwrap();
+        await dispatch(updateCardInStore({ cardId: card.id, data: { title: title.trim() } })).unwrap();
       } catch (error) {
         console.error('Failed to update card title:', error);
         setTitle(card.title);
@@ -48,7 +59,7 @@ const CardDetailModal: React.FC<CardDetailModalProps> = ({ card, isOpen, onClose
       setIsSaving(true);
       try {
         await dispatch(
-          updateCard({ cardId: card.id, data: { description: description.trim() || null } })
+          updateCardInStore({ cardId: card.id, data: { description: description.trim() || undefined } })
         ).unwrap();
       } catch (error) {
         console.error('Failed to update card description:', error);
@@ -65,9 +76,9 @@ const CardDetailModal: React.FC<CardDetailModalProps> = ({ card, isOpen, onClose
     setIsSaving(true);
     try {
       await dispatch(
-        updateCard({
+        updateCardInStore({
           cardId: card.id,
-          data: { dueDate: newDueDate ? new Date(newDueDate).toISOString() : null },
+          data: { dueDate: newDueDate ? new Date(newDueDate).toISOString() : undefined },
         })
       ).unwrap();
     } catch (error) {
@@ -245,12 +256,20 @@ const CardDetailModal: React.FC<CardDetailModalProps> = ({ card, isOpen, onClose
               )}
             </div>
 
-            {/* Labels (read-only for now) */}
-            {card.labels && card.labels.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">Labels</h3>
-                <div className="flex flex-wrap gap-2">
-                  {card.labels.map((cardLabel) => (
+            {/* Labels */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-gray-700">Labels</h3>
+                <button
+                  onClick={() => setShowLabelPicker(!showLabelPicker)}
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  {showLabelPicker ? 'Close' : 'Edit'}
+                </button>
+              </div>
+              {currentCard.labels && currentCard.labels.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {currentCard.labels.map((cardLabel) => (
                     <div
                       key={cardLabel.id}
                       className="px-3 py-1 rounded text-sm font-medium text-white"
@@ -260,15 +279,32 @@ const CardDetailModal: React.FC<CardDetailModalProps> = ({ card, isOpen, onClose
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+              {showLabelPicker && (
+                <div className="mt-2 border border-gray-200 rounded-lg bg-white">
+                  <LabelPicker
+                    card={currentCard}
+                    onUpdate={handleCardUpdate}
+                    onClose={() => setShowLabelPicker(false)}
+                  />
+                </div>
+              )}
+            </div>
 
-            {/* Members (read-only for now) */}
-            {card.members && card.members.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">Members</h3>
-                <div className="flex flex-wrap gap-2">
-                  {card.members.map((member) => (
+            {/* Members */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-gray-700">Members</h3>
+                <button
+                  onClick={() => setShowMemberPicker(!showMemberPicker)}
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  {showMemberPicker ? 'Close' : 'Edit'}
+                </button>
+              </div>
+              {currentCard.members && currentCard.members.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {currentCard.members.map((member) => (
                     <div key={member.id} className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded">
                       <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
                         {member.user.avatar ? (
@@ -285,8 +321,17 @@ const CardDetailModal: React.FC<CardDetailModalProps> = ({ card, isOpen, onClose
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+              {showMemberPicker && (
+                <div className="mt-2 border border-gray-200 rounded-lg bg-white">
+                  <MemberPicker
+                    card={currentCard}
+                    onUpdate={handleCardUpdate}
+                    onClose={() => setShowMemberPicker(false)}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Footer */}

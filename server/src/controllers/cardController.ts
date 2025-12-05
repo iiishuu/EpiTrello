@@ -357,3 +357,344 @@ export const reorderCards = async (req: AuthRequest, res: Response): Promise<voi
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+// POST /api/cards/:id/labels/:labelId - Add a label to a card
+export const addLabelToCard = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId;
+    const { id: cardId, labelId } = req.params;
+
+    if (!userId) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    // Find the card and verify ownership through board
+    const card = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: { list: { include: { board: true } } },
+    });
+
+    if (!card) {
+      res.status(404).json({ error: 'Card not found' });
+      return;
+    }
+
+    if (card.list.board.userId !== userId) {
+      res.status(403).json({ error: 'Access denied' });
+      return;
+    }
+
+    // Verify label exists and belongs to the same board
+    const label = await prisma.label.findUnique({
+      where: { id: labelId },
+    });
+
+    if (!label) {
+      res.status(404).json({ error: 'Label not found' });
+      return;
+    }
+
+    if (label.boardId !== card.list.boardId) {
+      res.status(400).json({ error: 'Label does not belong to this board' });
+      return;
+    }
+
+    // Check if label is already added to the card
+    const existing = await prisma.cardLabel.findUnique({
+      where: {
+        cardId_labelId: {
+          cardId,
+          labelId,
+        },
+      },
+    });
+
+    if (existing) {
+      res.status(400).json({ error: 'Label already added to this card' });
+      return;
+    }
+
+    // Add label to card
+    await prisma.cardLabel.create({
+      data: {
+        cardId,
+        labelId,
+      },
+    });
+
+    // Fetch updated card with labels
+    const updatedCard = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: {
+        labels: {
+          include: {
+            label: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      message: 'Label added to card successfully',
+      card: updatedCard,
+    });
+  } catch (error) {
+    console.error('Add label to card error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// DELETE /api/cards/:id/labels/:labelId - Remove a label from a card
+export const removeLabelFromCard = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId;
+    const { id: cardId, labelId } = req.params;
+
+    if (!userId) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    // Find the card and verify ownership through board
+    const card = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: { list: { include: { board: true } } },
+    });
+
+    if (!card) {
+      res.status(404).json({ error: 'Card not found' });
+      return;
+    }
+
+    if (card.list.board.userId !== userId) {
+      res.status(403).json({ error: 'Access denied' });
+      return;
+    }
+
+    // Remove label from card
+    const deleted = await prisma.cardLabel.deleteMany({
+      where: {
+        cardId,
+        labelId,
+      },
+    });
+
+    if (deleted.count === 0) {
+      res.status(404).json({ error: 'Label not found on this card' });
+      return;
+    }
+
+    // Fetch updated card with labels
+    const updatedCard = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: {
+        labels: {
+          include: {
+            label: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      message: 'Label removed from card successfully',
+      card: updatedCard,
+    });
+  } catch (error) {
+    console.error('Remove label from card error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// POST /api/cards/:id/members/:userId - Add a member to a card
+export const addMemberToCard = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const authUserId = req.userId;
+    const { id: cardId, userId: memberUserId } = req.params;
+
+    if (!authUserId) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    // Find the card and verify ownership through board
+    const card = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: { list: { include: { board: true } } },
+    });
+
+    if (!card) {
+      res.status(404).json({ error: 'Card not found' });
+      return;
+    }
+
+    if (card.list.board.userId !== authUserId) {
+      res.status(403).json({ error: 'Access denied' });
+      return;
+    }
+
+    // Verify member exists
+    const member = await prisma.user.findUnique({
+      where: { id: memberUserId },
+    });
+
+    if (!member) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    // Check if member is already added to the card
+    const existing = await prisma.cardMember.findUnique({
+      where: {
+        cardId_userId: {
+          cardId,
+          userId: memberUserId,
+        },
+      },
+    });
+
+    if (existing) {
+      res.status(400).json({ error: 'Member already added to this card' });
+      return;
+    }
+
+    // Add member to card
+    await prisma.cardMember.create({
+      data: {
+        cardId,
+        userId: memberUserId,
+      },
+    });
+
+    // Fetch updated card with members
+    const updatedCard = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: {
+        labels: {
+          include: {
+            label: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      message: 'Member added to card successfully',
+      card: updatedCard,
+    });
+  } catch (error) {
+    console.error('Add member to card error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// DELETE /api/cards/:id/members/:userId - Remove a member from a card
+export const removeMemberFromCard = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const authUserId = req.userId;
+    const { id: cardId, userId: memberUserId } = req.params;
+
+    if (!authUserId) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    // Find the card and verify ownership through board
+    const card = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: { list: { include: { board: true } } },
+    });
+
+    if (!card) {
+      res.status(404).json({ error: 'Card not found' });
+      return;
+    }
+
+    if (card.list.board.userId !== authUserId) {
+      res.status(403).json({ error: 'Access denied' });
+      return;
+    }
+
+    // Remove member from card
+    const deleted = await prisma.cardMember.deleteMany({
+      where: {
+        cardId,
+        userId: memberUserId,
+      },
+    });
+
+    if (deleted.count === 0) {
+      res.status(404).json({ error: 'Member not found on this card' });
+      return;
+    }
+
+    // Fetch updated card with members
+    const updatedCard = await prisma.card.findUnique({
+      where: { id: cardId },
+      include: {
+        labels: {
+          include: {
+            label: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      message: 'Member removed from card successfully',
+      card: updatedCard,
+    });
+  } catch (error) {
+    console.error('Remove member from card error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};

@@ -6,6 +6,7 @@ import invitationRoutes from './routes/invitations';
 import boardRoutes from './routes/boards';
 import listRoutes from './routes/lists';
 import cardRoutes from './routes/cards';
+import labelRoutes from './routes/labels';
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +29,7 @@ app.use('/api/boards', boardRoutes);
 app.use('/api', invitationRoutes);
 app.use('/api', listRoutes);
 app.use('/api', cardRoutes);
+app.use('/api', labelRoutes);
 
 // Start server
 app.listen(PORT, () => {
