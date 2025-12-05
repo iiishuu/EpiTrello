@@ -1,4 +1,4 @@
-import { Middleware } from '@reduxjs/toolkit';
+import type { Middleware } from '@reduxjs/toolkit';
 
 // Debounce helper
 function debounce<T extends (...args: any[]) => void>(
