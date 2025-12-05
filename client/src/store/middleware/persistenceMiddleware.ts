@@ -1,5 +1,5 @@
 import { Middleware } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { RootState } from '../index';
 
 // Debounce helper
 function debounce<T extends (...args: any[]) => void>(
