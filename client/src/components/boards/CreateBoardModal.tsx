@@ -94,7 +94,7 @@ export default function CreateBoardModal({
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Description
           </label>
           <textarea
@@ -109,7 +109,7 @@ export default function CreateBoardModal({
 
         {/* Color Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Board Color
           </label>
           <div className="grid grid-cols-3 gap-2">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import type { AppDispatch, RootState } from '../../store';
@@ -25,9 +25,15 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
 
   // Get cards for this list from Redux store
   const cardIds = useSelector((state: RootState) => state.cards.cardsByList[list.id] || []);
-  const cards = useSelector((state: RootState) =>
-    cardIds.map((id) => state.cards.cards[id]).filter(Boolean)
-  ).sort((a, b) => a.position - b.position);
+  const cardsById = useSelector((state: RootState) => state.cards.cards);
+
+  // Memoize cards to prevent unnecessary rerenders
+  const cards = useMemo(() => {
+    return cardIds
+      .map((id) => cardsById[id])
+      .filter(Boolean)
+      .sort((a, b) => a.position - b.position);
+  }, [cardIds, cardsById]);
 
   const handleUpdateName = async () => {
     if (listName.trim() && listName !== list.title) {
