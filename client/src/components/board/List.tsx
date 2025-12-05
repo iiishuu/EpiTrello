@@ -111,10 +111,7 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
           }`}
         >
           {/* List header */}
-          <div
-            className="flex items-center justify-between mb-3"
-            {...provided.dragHandleProps}
-          >
+          <div className="flex items-center justify-between mb-3">
             {isEditing ? (
               <input
                 type="text"
@@ -127,8 +124,9 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
               />
             ) : (
               <h3
+                {...provided.dragHandleProps}
                 onClick={() => setIsEditing(true)}
-                className="flex-1 px-2 py-1 text-sm font-semibold cursor-pointer hover:bg-gray-200 rounded"
+                className="flex-1 px-2 py-1 text-sm font-semibold cursor-grab active:cursor-grabbing hover:bg-gray-200 rounded"
               >
                 {list.title}
               </h3>
