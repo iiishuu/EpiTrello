@@ -4,7 +4,6 @@ import { Draggable, Droppable } from '@hello-pangea/dnd';
 import type { AppDispatch, RootState } from '../../store';
 import { updateList, deleteList } from '../../store/listsSlice';
 import type { List as ListType } from '../../services/listService';
-import { motion } from 'framer-motion';
 import Card from './Card';
 import CardDetailModal from './CardDetailModal';
 import AddCardButton from './AddCardButton';
@@ -104,14 +103,11 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
   return (
     <Draggable draggableId={list.id} index={index}>
       {(provided, snapshot) => (
-        <motion.div
+        <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className={`bg-gray-100 rounded-lg p-3 w-72 flex-shrink-0 h-fit max-h-full flex flex-col ${
-            snapshot.isDragging ? 'opacity-50 rotate-3 shadow-2xl' : ''
+          className={`bg-gray-100 rounded-lg p-3 w-72 flex-shrink-0 h-fit max-h-full flex flex-col transition-all ${
+            snapshot.isDragging ? 'opacity-80 rotate-2 shadow-2xl scale-105' : ''
           }`}
         >
           {/* List header */}
@@ -217,7 +213,7 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
               onClose={() => setSelectedCard(null)}
             />
           )}
-        </motion.div>
+        </div>
       )}
     </Draggable>
   );

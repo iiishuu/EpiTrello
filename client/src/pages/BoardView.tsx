@@ -22,8 +22,8 @@ export default function BoardView() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const lists = useSelector((state: RootState) => state.lists.lists);
-  // const cards = useSelector((state: RootState) => state.cards.cards);
-  // const cardsByList = useSelector((state: RootState) => state.cards.cardsByList);
+  const cardsById = useSelector((state: RootState) => state.cards.cards);
+  const cardsByList = useSelector((state: RootState) => state.cards.cardsByList);
   const [showLabelManager, setShowLabelManager] = useState(false);
   const [board, setBoard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -124,112 +124,65 @@ export default function BoardView() {
     const sourceListId = source.droppableId;
     const destListId = destination.droppableId;
 
-    // Get cards from store
-    const allCards = lists.flatMap((list) => list.cards || []);
-    const sourceCards = allCards.filter((card: any) => card.listId === sourceListId);
-    const destCards =
-      sourceListId === destListId
-        ? sourceCards
-        : allCards.filter((card: any) => card.listId === destListId);
+    // Optimistic update first
+    dispatch(
+      moveCardOptimistic({
+        cardId: draggableId,
+        sourceListId,
+        destListId,
+        sourceIndex: source.index,
+        destIndex: destination.index,
+      })
+    );
 
-    // Moving within the same list
-    if (sourceListId === destListId) {
-      const newCards = Array.from(sourceCards);
-      const [removed] = newCards.splice(source.index, 1);
-      newCards.splice(destination.index, 0, removed);
+    // Persist to backend
+    try {
+      // Get updated card positions from Redux store after optimistic update
+      const sourceCardIds = cardsByList[sourceListId] || [];
+      const destCardIds =
+        sourceListId === destListId
+          ? sourceCardIds
+          : cardsByList[destListId] || [];
 
-      // Update positions
-      const updatedCards = newCards.map((card, index) => ({
-        ...card,
-        position: index,
-      }));
+      const cardsToUpdate: any[] = [];
 
-      // Optimistic update
-      dispatch(
-        moveCardOptimistic({
-          cardId: draggableId,
-          sourceListId,
-          destListId,
-          sourceIndex: source.index,
-          destIndex: destination.index,
-        })
-      );
+      // Add source list cards
+      sourceCardIds.forEach((cardId, index) => {
+        const card = cardsById[cardId];
+        if (card) {
+          cardsToUpdate.push({
+            id: cardId,
+            position: index,
+            ...(card.listId !== sourceListId && { listId: card.listId }),
+          });
+        }
+      });
 
-      // Persist to backend
-      try {
-        await cardService.reorderCards({
-          cards: updatedCards.map((card: any) => ({
-            id: card.id,
-            position: card.position,
-          })),
+      // Add dest list cards if different from source
+      if (sourceListId !== destListId) {
+        destCardIds.forEach((cardId, index) => {
+          const card = cardsById[cardId];
+          if (card && !cardsToUpdate.find((c) => c.id === cardId)) {
+            cardsToUpdate.push({
+              id: cardId,
+              position: index,
+              listId: destListId,
+            });
+          }
         });
-      } catch (error) {
-        console.error('Failed to reorder cards:', error);
-        // Revert on error
-        const boardData = await boardService.getBoard(id!);
-        dispatch(setLists(boardData.lists || []));
-        const cardsData = (boardData.lists || []).map((list: any) => ({
-          listId: list.id,
-          cards: list.cards || [],
-        }));
-        dispatch(setCardsFromBoard(cardsData));
       }
-    } else {
-      // Moving to a different list
-      const newSourceCards = Array.from(sourceCards);
-      const [removed] = newSourceCards.splice(source.index, 1);
 
-      const newDestCards = Array.from(destCards);
-      newDestCards.splice(destination.index, 0, { ...removed, listId: destListId });
-
-      // Update positions for both lists
-      const updatedSourceCards = newSourceCards.map((card, index) => ({
-        ...card,
-        position: index,
+      await cardService.reorderCards({ cards: cardsToUpdate });
+    } catch (error) {
+      console.error('Failed to reorder/move cards:', error);
+      // Revert on error
+      const boardData = await boardService.getBoard(id!);
+      dispatch(setLists(boardData.lists || []));
+      const cardsData = (boardData.lists || []).map((list: any) => ({
+        listId: list.id,
+        cards: list.cards || [],
       }));
-
-      const updatedDestCards = newDestCards.map((card, index) => ({
-        ...card,
-        position: index,
-      }));
-
-      // Optimistic update
-      dispatch(
-        moveCardOptimistic({
-          cardId: draggableId,
-          sourceListId,
-          destListId,
-          sourceIndex: source.index,
-          destIndex: destination.index,
-        })
-      );
-
-      // Persist to backend
-      try {
-        await cardService.reorderCards({
-          cards: [
-            ...updatedSourceCards.map((card: any) => ({
-              id: card.id,
-              position: card.position,
-            })),
-            ...updatedDestCards.map((card: any) => ({
-              id: card.id,
-              position: card.position,
-              listId: card.listId,
-            })),
-          ],
-        });
-      } catch (error) {
-        console.error('Failed to move card:', error);
-        // Revert on error
-        const boardData = await boardService.getBoard(id!);
-        dispatch(setLists(boardData.lists || []));
-        const cardsData = (boardData.lists || []).map((list: any) => ({
-          listId: list.id,
-          cards: list.cards || [],
-        }));
-        dispatch(setCardsFromBoard(cardsData));
-      }
+      dispatch(setCardsFromBoard(cardsData));
     }
   };
 
