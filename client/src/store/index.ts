@@ -4,6 +4,7 @@ import boardsReducer from './boardsSlice';
 import listsReducer from './listsSlice';
 import cardsReducer from './cardsSlice';
 import labelsReducer from './labelsSlice';
+import { persistenceMiddleware } from './middleware/persistenceMiddleware';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,8 @@ export const store = configureStore({
     cards: cardsReducer,
     labels: labelsReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(persistenceMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

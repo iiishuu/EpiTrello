@@ -16,6 +16,7 @@ import List from '../components/board/List';
 import AddListButton from '../components/board/AddListButton';
 import FilterBar, { type FilterState } from '../components/board/FilterBar';
 import LabelManager from '../components/board/LabelManager';
+import SaveIndicator from '../components/board/SaveIndicator';
 
 export default function BoardView() {
   const { id } = useParams<{ id: string }>();
@@ -299,6 +300,9 @@ export default function BoardView() {
             boardId={id}
           />
         )}
+
+        {/* Save Indicator */}
+        <SaveIndicator />
       </PageTransition>
     </Layout>
   );
