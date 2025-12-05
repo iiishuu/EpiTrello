@@ -103,7 +103,7 @@ export default function CreateBoardModal({
             placeholder="What is this board about?"
             rows={3}
             disabled={loading}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:cursor-not-allowed"
           />
         </div>
 
@@ -138,20 +138,20 @@ export default function CreateBoardModal({
         </div>
 
         {/* Template Option */}
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={formData.useTemplate}
               onChange={(e) => setFormData({ ...formData, useTemplate: e.target.checked })}
               disabled={loading}
-              className="mt-1 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+              className="mt-1 w-4 h-4 text-primary border-gray-300 dark:border-gray-600 rounded focus:ring-primary"
             />
             <div className="flex-1">
-              <span className="block text-sm font-medium text-gray-900">
+              <span className="block text-sm font-medium text-gray-900 dark:text-gray-100">
                 Start with a template
               </span>
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                 Create a board with pre-filled lists (To Do, In Progress, Done) and sample cards to get started quickly
               </p>
             </div>

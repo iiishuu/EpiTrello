@@ -195,10 +195,10 @@ export default function BoardView() {
   if (loading) {
     return (
       <Layout showSidebar={false}>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading board...</p>
+            <p className="text-gray-600 dark:text-gray-400">Loading board...</p>
           </div>
         </div>
       </Layout>
@@ -208,9 +208,9 @@ export default function BoardView() {
   if (error || !board) {
     return (
       <Layout showSidebar={false}>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
           <div className="text-center">
-            <p className="text-red-600 mb-4">{error || 'Board not found'}</p>
+            <p className="text-red-600 dark:text-red-400 mb-4">{error || 'Board not found'}</p>
             <Button onClick={() => navigate('/')}>Back to Home</Button>
           </div>
         </div>
