@@ -106,12 +106,12 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className={`bg-gray-100 rounded-lg p-3 w-72 flex-shrink-0 h-fit max-h-full flex flex-col transition-all ${
-            snapshot.isDragging ? 'opacity-80 rotate-2 shadow-2xl scale-105' : ''
+          className={`bg-gray-100 rounded-xl p-4 w-80 flex-shrink-0 h-fit max-h-full flex flex-col transition-all shadow-sm ${
+            snapshot.isDragging ? 'opacity-80 rotate-2 shadow-2xl scale-105' : 'shadow-md'
           }`}
         >
           {/* List header */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             {isEditing ? (
               <input
                 type="text"
@@ -119,14 +119,14 @@ const List: React.FC<ListProps> = ({ list, index, filters }) => {
                 onChange={(e) => setListName(e.target.value)}
                 onBlur={handleUpdateName}
                 onKeyDown={handleKeyDown}
-                className="flex-1 px-2 py-1 text-sm font-semibold bg-white border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 text-base font-semibold bg-white border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 autoFocus
               />
             ) : (
               <h3
                 {...provided.dragHandleProps}
                 onClick={() => setIsEditing(true)}
-                className="flex-1 px-2 py-1 text-sm font-semibold cursor-grab active:cursor-grabbing hover:bg-gray-200 rounded"
+                className="flex-1 px-3 py-2 text-base font-bold cursor-grab active:cursor-grabbing hover:bg-gray-200 rounded-lg transition-colors"
               >
                 {list.title}
               </h3>

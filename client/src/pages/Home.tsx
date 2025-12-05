@@ -23,7 +23,7 @@ export default function Home() {
   }, [dispatch]);
 
   // Handle board creation
-  const handleCreateBoard = async (data: CreateBoardData) => {
+  const handleCreateBoard = async (data: CreateBoardData & { useTemplate?: boolean }) => {
     const result = await dispatch(createBoard(data));
     if (createBoard.fulfilled.match(result)) {
       setShowCreateModal(false);

@@ -76,6 +76,7 @@ export interface CreateBoardData {
   name: string;
   color?: string;
   description?: string;
+  useTemplate?: boolean;
 }
 
 export interface UpdateBoardData {

@@ -38,7 +38,7 @@ export const getBoards = async (req: AuthRequest, res: Response): Promise<void> 
 export const createBoard = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.userId;
-    const { name, color, description } = req.body;
+    const { name, color, description, useTemplate } = req.body;
 
     if (!userId) {
       res.status(401).json({ error: 'Unauthorized' });
@@ -64,6 +64,75 @@ export const createBoard = async (req: AuthRequest, res: Response): Promise<void
         userId,
       },
     });
+
+    // If useTemplate is true, create default lists and cards
+    if (useTemplate) {
+      // Create "To Do" list
+      const todoList = await prisma.list.create({
+        data: {
+          title: 'To Do',
+          position: 0,
+          boardId: board.id,
+        },
+      });
+
+      // Create "In Progress" list
+      const inProgressList = await prisma.list.create({
+        data: {
+          title: 'In Progress',
+          position: 1,
+          boardId: board.id,
+        },
+      });
+
+      // Create "Done" list
+      const doneList = await prisma.list.create({
+        data: {
+          title: 'Done',
+          position: 2,
+          boardId: board.id,
+        },
+      });
+
+      // Create sample cards for To Do list
+      await prisma.card.create({
+        data: {
+          title: 'Welcome to your board!',
+          description: 'This is a sample card. Click to edit or delete it.',
+          position: 0,
+          listId: todoList.id,
+        },
+      });
+
+      await prisma.card.create({
+        data: {
+          title: 'Try dragging cards between lists',
+          description: 'You can move cards by dragging them to different lists.',
+          position: 1,
+          listId: todoList.id,
+        },
+      });
+
+      // Create sample card for In Progress list
+      await prisma.card.create({
+        data: {
+          title: 'Add labels and members to cards',
+          description: 'Click on a card to add labels, members, and due dates.',
+          position: 0,
+          listId: inProgressList.id,
+        },
+      });
+
+      // Create sample card for Done list
+      await prisma.card.create({
+        data: {
+          title: 'Board setup complete',
+          description: 'You can now start organizing your tasks!',
+          position: 0,
+          listId: doneList.id,
+        },
+      });
+    }
 
     res.status(201).json({
       message: 'Board created successfully',

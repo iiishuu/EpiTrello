@@ -7,7 +7,7 @@ import type { CreateBoardData } from '../../services/boardService';
 interface CreateBoardModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: CreateBoardData) => void;
+  onSubmit: (data: CreateBoardData & { useTemplate?: boolean }) => void;
   loading?: boolean;
   error?: string | null;
 }
@@ -31,10 +31,11 @@ export default function CreateBoardModal({
   loading = false,
   error = null,
 }: CreateBoardModalProps) {
-  const [formData, setFormData] = useState<CreateBoardData>({
+  const [formData, setFormData] = useState<CreateBoardData & { useTemplate?: boolean }>({
     name: '',
     color: '#0079BF',
     description: '',
+    useTemplate: false,
   });
 
   const [errors, setErrors] = useState<{ name?: string }>({});
@@ -62,6 +63,7 @@ export default function CreateBoardModal({
       name: '',
       color: '#0079BF',
       description: '',
+      useTemplate: false,
     });
     setErrors({});
     onClose();
@@ -133,6 +135,27 @@ export default function CreateBoardModal({
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Template Option */}
+        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.useTemplate}
+              onChange={(e) => setFormData({ ...formData, useTemplate: e.target.checked })}
+              disabled={loading}
+              className="mt-1 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+            />
+            <div className="flex-1">
+              <span className="block text-sm font-medium text-gray-900">
+                Start with a template
+              </span>
+              <p className="text-xs text-gray-600 mt-1">
+                Create a board with pre-filled lists (To Do, In Progress, Done) and sample cards to get started quickly
+              </p>
+            </div>
+          </label>
         </div>
 
         {/* Error Message */}
