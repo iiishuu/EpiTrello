@@ -39,11 +39,26 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Smooth transitions for theme changes */
-* {
-  transition-property: background-color, border-color, color, fill, stroke;
+/* Smooth transitions for theme changes - only apply to specific properties */
+*,
+*::before,
+*::after {
+  transition-property: none;
+}
+
+/* Apply transitions only where needed */
+body,
+header,
+main,
+nav,
+button,
+a,
+div[class*="bg-"],
+div[class*="border-"],
+div[class*="text-"] {
+  transition-property: background-color, border-color, color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 200ms;
 }
 
 /* Custom animations */
