@@ -76,7 +76,7 @@ const listsSlice = createSlice({
       state.error = null;
     },
     // Optimistic updates for reordering
-    optimisticReorder: (state, action: PayloadAction<List[]>) => {
+    reorderListsOptimistic: (state, action: PayloadAction<List[]>) => {
       state.lists = action.payload;
     },
   },
@@ -143,5 +143,5 @@ const listsSlice = createSlice({
   },
 });
 
-export const { setLists, clearLists, optimisticReorder } = listsSlice.actions;
+export const { setLists, clearLists, reorderListsOptimistic } = listsSlice.actions;
 export default listsSlice.reducer;

@@ -231,7 +231,7 @@ const LabelManager: React.FC<LabelManagerProps> = ({ isOpen, onClose, boardId })
           <Button
             onClick={() => setIsCreating(true)}
             variant="secondary"
-            className="w-full"
+            className="w-full flex items-center justify-center"
             size="sm"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

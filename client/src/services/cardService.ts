@@ -92,6 +92,7 @@ export interface ReorderCardsData {
   cards: {
     id: string;
     position: number;
+    listId?: string;
   }[];
 }
 

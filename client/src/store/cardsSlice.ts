@@ -85,6 +85,67 @@ const cardsSlice = createSlice({
       state.cards = {};
       state.cardsByList = {};
     },
+    // Optimistic update for moving cards
+    moveCardOptimistic: (
+      state,
+      action: PayloadAction<{
+        cardId: string;
+        sourceListId: string;
+        destListId: string;
+        sourceIndex: number;
+        destIndex: number;
+      }>
+    ) => {
+      const { cardId, sourceListId, destListId, sourceIndex, destIndex } = action.payload;
+      const card = state.cards[cardId];
+
+      if (!card) return;
+
+      // Same list
+      if (sourceListId === destListId) {
+        const listCards = state.cardsByList[sourceListId] || [];
+        const newListCards = Array.from(listCards);
+        newListCards.splice(sourceIndex, 1);
+        newListCards.splice(destIndex, 0, cardId);
+        state.cardsByList[sourceListId] = newListCards;
+
+        // Update positions
+        newListCards.forEach((id, index) => {
+          if (state.cards[id]) {
+            state.cards[id].position = index;
+          }
+        });
+      } else {
+        // Different lists
+        const sourceListCards = state.cardsByList[sourceListId] || [];
+        const destListCards = state.cardsByList[destListId] || [];
+
+        const newSourceListCards = Array.from(sourceListCards);
+        newSourceListCards.splice(sourceIndex, 1);
+        state.cardsByList[sourceListId] = newSourceListCards;
+
+        const newDestListCards = Array.from(destListCards);
+        newDestListCards.splice(destIndex, 0, cardId);
+        state.cardsByList[destListId] = newDestListCards;
+
+        // Update card listId
+        state.cards[cardId].listId = destListId;
+
+        // Update positions in source list
+        newSourceListCards.forEach((id, index) => {
+          if (state.cards[id]) {
+            state.cards[id].position = index;
+          }
+        });
+
+        // Update positions in dest list
+        newDestListCards.forEach((id, index) => {
+          if (state.cards[id]) {
+            state.cards[id].position = index;
+          }
+        });
+      }
+    },
   },
   extraReducers: (builder) => {
     // Create card
@@ -200,5 +261,5 @@ const cardsSlice = createSlice({
   },
 });
 
-export const { clearError, setCardsFromBoard, clearCards } = cardsSlice.actions;
+export const { clearError, setCardsFromBoard, clearCards, moveCardOptimistic } = cardsSlice.actions;
 export default cardsSlice.reducer;
